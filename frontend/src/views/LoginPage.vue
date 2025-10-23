@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-md">
+  <div class="page-container safe-top safe-bottom">
+    <div class="w-full max-w-md xs:max-w-[95%] sm:max-w-md">
       <LoginForm />
     </div>
   </div>

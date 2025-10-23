@@ -132,21 +132,21 @@
 
 ### 測試 - 使用者故事 3（TDD：必須先寫且失敗）
 
-- [ ] T053 [P] [US3] 建立 Integration 測試 frontend/tests/integration/form-validation.spec.ts（測試即時驗證：空白欄位、密碼長度不足、修正錯誤後按鈕啟用）
-- [ ] T054 [P] [US3] 建立 Unit 測試 frontend/tests/unit/utils/validators.spec.ts（測試 Yup schema 驗證規則）
-- [ ] T055 [P] [US3] 建立 Unit 測試 frontend/tests/unit/composables/useForm.spec.ts（測試表單驗證 composable 邏輯）
+- [X] T053 [P] [US3] 建立 Integration 測試 frontend/tests/integration/form-validation.spec.ts（測試即時驗證：空白欄位、密碼長度不足、修正錯誤後按鈕啟用）
+- [X] T054 [P] [US3] 建立 Unit 測試 frontend/tests/unit/utils/validators.spec.ts（測試 Yup schema 驗證規則）
+- [X] T055 [P] [US3] 建立 Unit 測試 frontend/tests/unit/composables/useForm.spec.ts（測試表單驗證 composable 邏輯）
 
 ### 實作 - 使用者故事 3
 
-- [ ] T056 [US3] 建立 useForm composable frontend/src/composables/useForm.ts（整合 VeeValidate，提供欄位驗證、錯誤訊息、提交檢查）
-- [ ] T057 [US3] 在 FormInput 元件整合即時驗證（blur 事件觸發驗證，顯示錯誤訊息，樣式變化）
-- [ ] T058 [US3] 在 LoginForm 整合 useForm composable（綁定 VeeValidate，使用 loginCredentialsSchema）
-- [ ] T059 [US3] 在 LoginForm 新增帳號欄位驗證回饋（必填檢查、長度 3-50 字元、blur 時顯示錯誤）
-- [ ] T060 [US3] 在 LoginForm 新增密碼欄位驗證回饋（必填檢查、長度 6-100 字元、blur 時顯示錯誤）
-- [ ] T061 [US3] 在 LoginForm 新增提交前驗證（所有欄位通過驗證才啟用登入按鈕）
-- [ ] T062 [US3] 在 FormInput 新增密碼顯示/隱藏切換功能（eye icon 按鈕，切換 type="password" / type="text"）
-- [ ] T063 [US3] 在 LoginForm 新增鍵盤操作支援（Enter 鍵提交表單，Tab 鍵正確導航）
-- [ ] T064 [US3] 在 LoginForm 新增無障礙屬性（aria-label, aria-describedby, role，確保螢幕閱讀器可讀取錯誤訊息）
+- [X] T056 [US3] 建立 useForm composable frontend/src/composables/useForm.ts（整合 VeeValidate，提供欄位驗證、錯誤訊息、提交檢查）
+- [X] T057 [US3] 在 FormInput 元件整合即時驗證（blur 事件觸發驗證，顯示錯誤訊息，樣式變化）
+- [X] T058 [US3] 在 LoginForm 整合 useForm composable（綁定 VeeValidate，使用 loginCredentialsSchema）
+- [X] T059 [US3] 在 LoginForm 新增帳號欄位驗證回饋（必填檢查、長度 3-50 字元、blur 時顯示錯誤）
+- [X] T060 [US3] 在 LoginForm 新增密碼欄位驗證回饋（必填檢查、長度 6-100 字元、blur 時顯示錯誤）
+- [X] T061 [US3] 在 LoginForm 新增提交前驗證（所有欄位通過驗證才啟用登入按鈕）
+- [X] T062 [US3] 在 FormInput 新增密碼顯示/隱藏切換功能（eye icon 按鈕，切換 type="password" / type="text"）
+- [X] T063 [US3] 在 LoginForm 新增鍵盤操作支援（Enter 鍵提交表單，Tab 鍵正確導航）
+- [X] T064 [US3] 在 LoginForm 新增無障礙屬性（aria-label, aria-describedby, role，確保螢幕閱讀器可讀取錯誤訊息）
 
 **檢查點**: 所有使用者故事現在都能獨立運作
 
@@ -156,13 +156,13 @@
 
 **目的**: 影響多個使用者故事的改進
 
-- [ ] T065 [P] 建立 MSW handlers frontend/src/mocks/handlers.ts（模擬 CRM API 用於開發與測試）
-- [ ] T066 [P] 新增 Tailwind 自訂設計 token 於 frontend/tailwind.config.js（顏色、間距、繁體中文字型）
-- [ ] T067 [P] 建立可重用樣式 utility classes 於 frontend/src/assets/styles/main.css
-- [ ] T068 優化響應式設計（測試 320px-428px 行動裝置與 1024px+ 桌面裝置）
-- [ ] T069 [P] 新增 Unit 測試 frontend/tests/unit/components/LoginForm.spec.ts（元件單元測試）
-- [ ] T070 [P] 新增 Unit 測試 frontend/tests/unit/components/FormInput.spec.ts（元件單元測試）
-- [ ] T071 [P] 新增 Unit 測試 frontend/tests/unit/stores/auth.spec.ts（Pinia store 測試）
+- [X] T065 [P] 建立 MSW handlers frontend/src/mocks/handlers.ts（模擬 CRM API 用於開發與測試）
+- [X] T066 [P] 新增 Tailwind 自訂設計 token 於 frontend/tailwind.config.js（顏色、間距、繁體中文字型）
+- [X] T067 [P] 建立可重用樣式 utility classes 於 frontend/src/assets/styles/main.css
+- [X] T068 優化響應式設計（測試 320px-428px 行動裝置與 1024px+ 桌面裝置）
+- [X] T069 [P] 新增 Unit 測試 frontend/tests/unit/components/LoginForm.spec.ts（元件單元測試）
+- [X] T070 [P] 新增 Unit 測試 frontend/tests/unit/components/FormInput.spec.ts（元件單元測試）
+- [X] T071 [P] 新增 Unit 測試 frontend/tests/unit/stores/auth.spec.ts（Pinia store 測試）
 - [ ] T072 執行無障礙檢查（使用 Lighthouse CI, eslint-plugin-vuejs-accessibility）
 - [ ] T073 執行效能測試（驗證 FCP < 1.5s, TTI < 3.5s）
 - [ ] T074 執行跨瀏覽器測試（Chrome, Firefox, Safari, Edge）

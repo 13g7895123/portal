@@ -1,26 +1,26 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- 頂部導航列 -->
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex items-center">
-            <h1 class="text-xl font-semibold text-gray-900">SaaS 登入系統</h1>
-          </div>
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-700">{{ user?.displayName }}</span>
-            <Button variant="outline" size="small" @click="handleLogout">
-              登出
-            </Button>
-          </div>
+    <nav class="navbar safe-top">
+      <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+        <h1 class="text-lg sm:text-xl font-semibold text-gray-900 truncate">
+          SaaS 登入系統
+        </h1>
+        <div class="flex items-center space-x-2 sm:space-x-4">
+          <span class="text-sm sm:text-base text-gray-700 truncate max-w-[120px] sm:max-w-none">
+            {{ user?.displayName }}
+          </span>
+          <Button variant="outline" size="small" @click="handleLogout">
+            登出
+          </Button>
         </div>
       </div>
     </nav>
 
     <!-- 主要內容 -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">會員頁面</h2>
+    <main class="max-w-7xl mx-auto section-padding safe-bottom">
+      <div class="card">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">會員頁面</h2>
 
         <div class="space-y-4">
           <Alert message="登入成功！歡迎使用系統" type="success" :dismissible="false" />

@@ -1,70 +1,71 @@
-// services/authService.ts
-// CRM API 整合 - 身份驗證服務
+import api from './api'
+import type { UserInfo } from '@/stores/auth'
 
-import axios, { type AxiosInstance } from 'axios'
-import type { LoginCredentials } from '@/types/auth'
-import type { LoginApiResponse, VerifySuccessResponse } from '@/types/api'
-import { ErrorHandler } from '@/utils/errorHandler'
+/**
+ * 登入請求介面
+ */
+export interface LoginRequest {
+  username: string
+  password: string
+  remember_me?: boolean
+}
 
-// Axios 實例設定
-const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_CRM_API_URL || 'http://localhost:3000/api',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
+/**
+ * 登入回應介面
+ */
+export interface LoginResponse {
+  access_token: string
+  token_type: string
+  expires_in: number
+  user: UserInfo
+}
 
-// 請求攔截器
-apiClient.interceptors.request.use(
-  (config) => {
-    // 從 localStorage 或 sessionStorage 取得 token
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
+/**
+ * Token 更新回應介面
+ */
+export interface RefreshResponse {
+  access_token: string
+  token_type: string
+  expires_in: number
+}
 
-// 回應攔截器
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // 使用 ErrorHandler 處理錯誤
-    const errorMessage = ErrorHandler.handleApiError(error)
-    return Promise.reject(errorMessage)
-  }
-)
-
-// AuthService 類別
-export class AuthService {
+/**
+ * Authentication Service
+ *
+ * 處理所有認證相關的 API 呼叫
+ */
+class AuthService {
   /**
-   * 使用者登入
+   * 登入
    */
-  static async login(credentials: LoginCredentials): Promise<LoginApiResponse> {
-    try {
-      const response = await apiClient.post<LoginApiResponse>('/auth/login', credentials)
-      return response.data
-    } catch (error) {
-      throw error
-    }
+  async login(credentials: LoginRequest): Promise<LoginResponse> {
+    const response = await api.post<LoginResponse>('/api/v1/auth/login', credentials)
+    return response.data
   }
 
   /**
-   * 驗證 Token 有效性
+   * 登出
    */
-  static async verify(): Promise<VerifySuccessResponse> {
-    try {
-      const response = await apiClient.get<VerifySuccessResponse>('/auth/verify')
-      return response.data
-    } catch (error) {
-      throw error
-    }
+  async logout(): Promise<void> {
+    await api.post('/api/v1/auth/logout')
+  }
+
+  /**
+   * 更新 access token
+   */
+  async refreshToken(): Promise<RefreshResponse> {
+    const response = await api.post<RefreshResponse>('/api/v1/auth/refresh')
+    return response.data
+  }
+
+  /**
+   * 取得當前使用者資訊
+   */
+  async getCurrentUser(): Promise<{ user: UserInfo }> {
+    const response = await api.get<{ user: UserInfo }>('/api/v1/auth/me')
+    return response.data
   }
 }
 
-export default AuthService
+// Export singleton instance
+export default new AuthService()

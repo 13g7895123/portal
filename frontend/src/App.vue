@@ -5,13 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-
-const authStore = useAuthStore()
-
-// 應用程式載入時檢查登入狀態
-onMounted(() => {
-  authStore.checkAuth()
-})
+/**
+ * App.vue - Main Application Component
+ *
+ * Phase 3 Implementation:
+ * - Authentication checks are handled by LoginPage.vue and router guards
+ * - No global auth check needed here
+ */
 </script>

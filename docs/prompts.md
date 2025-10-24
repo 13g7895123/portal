@@ -1,1 +1,1 @@
-1. 目前console出現[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)，幫我確認應該如何調整修正
+1. 我目前在登入頁，輸入了帳號密碼卻無法使用，幫我確認問題，authStore.checkAuth is not a function

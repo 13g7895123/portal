@@ -5,9 +5,17 @@
       <p class="text-sm sm:text-base text-gray-600">請輸入您的帳號密碼</p>
     </div>
 
+    <!-- 成功訊息 -->
+    <Alert
+      v-if="isSuccess && successMessage"
+      :message="successMessage"
+      type="success"
+      :dismissible="false"
+    />
+
     <!-- 錯誤訊息 -->
     <Alert
-      v-if="errorMessage"
+      v-if="errorMessage && !isSuccess"
       :message="errorMessage"
       type="error"
       :dismissible="true"
@@ -71,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuth } from '@/composables/useAuth'
 import { useForm } from '@/composables/useForm'
 import { loginCredentialsSchema } from '@/utils/validators'
@@ -81,6 +89,10 @@ import Alert from './Alert.vue'
 import type { LoginCredentials } from '@/types/auth'
 
 const { login, isLoading, error } = useAuth()
+
+// 成功狀態追蹤
+const isSuccess = ref(false)
+const successMessage = ref('')
 
 // 使用 useForm composable 進行表單驗證
 const { values, errors, isValid, validateField, validateForm } = useForm<LoginCredentials>(
@@ -96,7 +108,7 @@ const errorMessage = computed(() => error.value?.message || '')
 
 // 表單有效性：驗證通過且未在載入中
 const isFormValid = computed(() => {
-  return isValid && !isLoading.value
+  return isValid && !isLoading.value && !isSuccess.value
 })
 
 /**
@@ -119,10 +131,20 @@ const handleSubmit = async () => {
   }
 
   try {
-    await login(values)
+    const result = await login(values)
+
+    if (result.success) {
+      // 顯示成功訊息
+      isSuccess.value = true
+      successMessage.value = '登入成功！正在跳轉...'
+
+      // 成功訊息會在導向前短暫顯示
+      // 實際導向由 useAuth 的 login 函式處理
+    }
   } catch (err) {
     // 錯誤已在 useAuth 中處理
     console.error('Login error:', err)
+    isSuccess.value = false
   }
 }
 </script>

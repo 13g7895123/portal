@@ -1,66 +1,102 @@
 // composables/useAuth.ts
-// 整合 auth store 與 localStorage，提供登入函式與錯誤處理
+// 認證組合式函式 - 提供登入、登出與使用者資訊管理
 
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { useLocalStorage } from './useLocalStorage'
 import { useRouter } from 'vue-router'
 import type { LoginCredentials } from '@/types/auth'
-import type { ErrorMessage } from '@/types/api'
-import { ErrorHandler } from '@/utils/errorHandler'
 
+/**
+ * 認證 Composable
+ * 提供認證相關功能的組合式函式
+ */
 export function useAuth() {
   const authStore = useAuthStore()
-  const { saveToken, clearToken } = useLocalStorage()
   const router = useRouter()
 
-  const isLoading = ref(false)
-  const error = ref<ErrorMessage | null>(null)
+  // Computed properties
+  const isAuthenticated = computed(() => authStore.isLoggedIn)
+  const user = computed(() => authStore.user)
+  const isLoading = computed(() => authStore.isLoading)
+  const error = computed(() => authStore.error)
 
   /**
-   * 登入函式
+   * 登入
    */
   const login = async (credentials: LoginCredentials) => {
-    isLoading.value = true
-    error.value = null
-
     try {
-      const response = await authStore.login(credentials)
+      const { username, password, rememberMe = false } = credentials
 
-      if (response.success) {
-        // 儲存 token
-        saveToken(response.data.token, credentials.rememberMe || false)
+      await authStore.login(username, password, rememberMe)
 
-        // 導向會員頁面
-        await router.push('/dashboard')
+      // 登入成功後重定向到儀表板
+      await router.push({ name: 'dashboard' })
 
-        return response
+      return { success: true }
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || '登入失敗，請稍後再試',
       }
-    } catch (err: unknown) {
-      // 處理錯誤
-      const errorMessage = ErrorHandler.handleApiError(err)
-      error.value = errorMessage
-      throw errorMessage
-    } finally {
-      isLoading.value = false
     }
   }
 
   /**
-   * 登出函式
+   * 登出
    */
   const logout = async () => {
-    authStore.clearAuth()
-    clearToken()
-    await router.push('/login')
+    try {
+      await authStore.logout()
+
+      // 登出後重定向到登入頁
+      await router.push({ name: 'login' })
+
+      return { success: true }
+    } catch (err: any) {
+      console.error('登出錯誤:', err)
+      return {
+        success: false,
+        error: err.message || '登出失敗',
+      }
+    }
+  }
+
+  /**
+   * 取得當前使用者資訊
+   */
+  const fetchCurrentUser = async () => {
+    try {
+      await authStore.fetchCurrentUser()
+      return { success: true }
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || '取得使用者資訊失敗',
+      }
+    }
+  }
+
+  /**
+   * 檢查認證狀態並在需要時更新使用者資訊
+   */
+  const checkAuthStatus = async () => {
+    if (isAuthenticated.value && !user.value) {
+      // 有 token 但沒有使用者資訊，嘗試取得
+      await fetchCurrentUser()
+    }
   }
 
   return {
-    login,
-    logout,
+    // State
+    isAuthenticated,
+    user,
     isLoading,
     error,
-    isAuthenticated: () => authStore.isAuthenticated,
-    user: () => authStore.user
+
+    // Actions
+    login,
+    logout,
+    fetchCurrentUser,
+    checkAuthStatus,
   }
 }

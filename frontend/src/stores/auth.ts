@@ -1,115 +1,154 @@
 // stores/auth.ts
-// Pinia 驗證狀態管理
+// Pinia 驗證狀態管理 - Enhanced for CRM API Integration
 
 import { defineStore } from 'pinia'
-import type { UserInfo, AuthToken, LoginCredentials } from '@/types/auth'
-import { AuthService } from '@/services/authService'
-import { useLocalStorage } from '@/composables/useLocalStorage'
 
+/**
+ * 使用者資訊介面
+ */
+export interface UserInfo {
+  id: string
+  username: string
+  email: string
+  fullName?: string
+  department?: string
+  region?: string
+  isActive: boolean
+  lastLoginAt?: string
+}
+
+/**
+ * 認證狀態介面
+ */
 export interface AuthState {
   isAuthenticated: boolean
   user: UserInfo | null
-  token: AuthToken | null
-  loginTime: number | null
+  accessToken: string | null
+  lastRefresh: number | null
+  isLoading: boolean
+  error: string | null
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     isAuthenticated: false,
     user: null,
-    token: null,
-    loginTime: null
+    accessToken: null,
+    lastRefresh: null,
+    isLoading: false,
+    error: null,
   }),
 
   getters: {
     /**
-     * 檢查 token 是否仍然有效
+     * 取得使用者顯示名稱
      */
-    isTokenValid: (state): boolean => {
-      if (!state.token || !state.loginTime) return false
-      const now = Date.now()
-      const expiresAt = state.loginTime + state.token.expiresIn * 1000
-      return now < expiresAt
-    }
+    displayName: (state): string => {
+      return state.user?.fullName || state.user?.username || '訪客'
+    },
+
+    /**
+     * 檢查使用者是否已認證
+     */
+    isLoggedIn: (state): boolean => {
+      return state.isAuthenticated && !!state.accessToken
+    },
   },
 
   actions: {
     /**
-     * 設定驗證狀態
+     * 登入動作
      */
-    setAuth(user: UserInfo, token: AuthToken) {
-      this.isAuthenticated = true
-      this.user = user
-      this.token = token
-      this.loginTime = Date.now()
+    async login(username: string, password: string, rememberMe: boolean = false) {
+      this.isLoading = true
+      this.error = null
+
+      try {
+        const authService = (await import('@/services/authService')).default
+
+        // 呼叫 authService.login()
+        const response = await authService.login({
+          username,
+          password,
+          remember_me: rememberMe,
+        })
+
+        // 儲存 access token 到 sessionStorage
+        sessionStorage.setItem('access_token', response.access_token)
+
+        // 更新 store 狀態
+        this.isAuthenticated = true
+        this.user = response.user
+        this.accessToken = response.access_token
+        this.lastRefresh = Date.now()
+      } catch (error: any) {
+        this.error = error.response?.data?.message || error.message || '登入失敗'
+        throw error
+      } finally {
+        this.isLoading = false
+      }
     },
 
     /**
-     * 清除驗證狀態
+     * 登出動作
+     */
+    async logout() {
+      try {
+        const authService = (await import('@/services/authService')).default
+
+        // 呼叫 authService.logout()
+        await authService.logout()
+
+        this.clearAuth()
+      } catch (error) {
+        console.error('登出失敗:', error)
+        // 即使 API 呼叫失敗，仍清除本地狀態
+        this.clearAuth()
+      }
+    },
+
+    /**
+     * 取得當前使用者資訊
+     */
+    async fetchCurrentUser() {
+      try {
+        const authService = (await import('@/services/authService')).default
+
+        // 呼叫 authService.getCurrentUser()
+        const response = await authService.getCurrentUser()
+        this.user = response.user
+      } catch (error) {
+        console.error('取得使用者資訊失敗:', error)
+        throw error
+      }
+    },
+
+    /**
+     * 更新 access token
+     */
+    updateAccessToken(token: string) {
+      this.accessToken = token
+      this.lastRefresh = Date.now()
+      sessionStorage.setItem('access_token', token)
+    },
+
+    /**
+     * 清除認證狀態
      */
     clearAuth() {
       this.isAuthenticated = false
       this.user = null
-      this.token = null
-      this.loginTime = null
+      this.accessToken = null
+      this.lastRefresh = null
+      this.error = null
+      sessionStorage.removeItem('access_token')
     },
 
     /**
-     * 登入方法
+     * 設定錯誤訊息
      */
-    async login(credentials: LoginCredentials) {
-      const response = await AuthService.login(credentials)
-
-      if (response.success) {
-        this.setAuth(response.data.user, response.data.token)
-        return response
-      }
-
-      throw new Error('Login failed')
+    setError(message: string) {
+      this.error = message
     },
-
-    /**
-     * 檢查登入狀態
-     * 頁面載入時檢查 localStorage/sessionStorage token，若有效則自動登入
-     */
-    async checkAuth() {
-      const { getToken, getTokenExpiry, isTokenExpired, clearToken } = useLocalStorage()
-
-      // 檢查是否有 token
-      const token = getToken()
-      if (!token) {
-        this.clearAuth()
-        return
-      }
-
-      // 檢查 token 是否過期
-      if (isTokenExpired()) {
-        this.clearAuth()
-        clearToken()
-        return
-      }
-
-      // 驗證 token 有效性
-      try {
-        const response = await AuthService.verify()
-
-        if (response.success) {
-          // 重建驗證狀態
-          const expiry = getTokenExpiry()
-          if (expiry) {
-            const expiresIn = Math.floor((expiry - Date.now()) / 1000)
-            this.setAuth(response.data.user, {
-              accessToken: token,
-              expiresIn,
-              tokenType: 'Bearer'
-            })
-          }
-        }
-      } catch (error) {
-        // Token 無效或過期，清除狀態
-        this.clearAuth()
-        clearToken()
-      }
-    }
-  }
+  },
 })

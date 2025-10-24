@@ -35,7 +35,7 @@ const authCheckError = ref(false)
 /**
  * 檢查現有的認證狀態
  * - 若有 access token，嘗試驗證並取得使用者資訊
- * - 若已認證，直接導向 dashboard
+ * - 若已認證，直接導向 app-center
  * - 若驗證失敗，清除認證狀態並顯示登入表單
  */
 onMounted(async () => {
@@ -53,7 +53,7 @@ onMounted(async () => {
 
         // Token 有效，使用者已認證
         if (authStore.isLoggedIn) {
-          await router.push({ name: 'dashboard' })
+          await router.push({ name: 'app-center' })
         }
       } catch (error) {
         // Token 無效或過期，清除並允許使用者重新登入

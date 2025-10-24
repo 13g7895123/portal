@@ -2,32 +2,7 @@
 // Pinia 驗證狀態管理 - Enhanced for CRM API Integration
 
 import { defineStore } from 'pinia'
-
-/**
- * 使用者資訊介面
- */
-export interface UserInfo {
-  id: string
-  username: string
-  email: string
-  fullName?: string
-  department?: string
-  region?: string
-  isActive: boolean
-  lastLoginAt?: string
-}
-
-/**
- * 認證狀態介面
- */
-export interface AuthState {
-  isAuthenticated: boolean
-  user: UserInfo | null
-  accessToken: string | null
-  lastRefresh: number | null
-  isLoading: boolean
-  error: string | null
-}
+import type { UserInfo, AuthState } from '@/types/auth'
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({

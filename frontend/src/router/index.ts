@@ -17,6 +17,15 @@ const router = createRouter({
       },
     },
     {
+      path: '/app-center',
+      name: 'app-center',
+      component: () => import('@/views/AppCenterPage.vue'),
+      meta: {
+        requiresAuth: true,
+        title: '應用程式中心 - SaaS 登入系統',
+      },
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('@/views/DashboardPage.vue'),
@@ -63,9 +72,9 @@ router.beforeEach((to, from, next) => {
     // 沒有 token，重定向到登入頁
     next({ name: 'login' })
   }
-  // 已登入用戶訪問登入頁，重定向到 dashboard
+  // 已登入用戶訪問登入頁，重定向到 app-center
   else if (to.name === 'login' && hasToken && authStore.isAuthenticated) {
-    next({ name: 'dashboard' })
+    next({ name: 'app-center' })
   }
   // 其他情況正常通過
   else {

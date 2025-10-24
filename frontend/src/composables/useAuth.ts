@@ -26,17 +26,17 @@ export function useAuth() {
   const login = async (credentials: LoginCredentials) => {
     try {
       const { username, password, rememberMe = false } = credentials
-
       await authStore.login(username, password, rememberMe)
 
-      // 登入成功後重定向到儀表板
-      await router.push({ name: 'dashboard' })
+      // 登入成功後重定向到應用程式中心
+      await router.push({ name: 'app-center' })
 
       return { success: true }
     } catch (err: any) {
+      // 錯誤已經由 authStore 設定到 error 狀態
       return {
         success: false,
-        error: err.message || '登入失敗，請稍後再試',
+        error: authStore.error || '登入失敗，請稍後再試',
       }
     }
   }

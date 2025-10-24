@@ -33,9 +33,16 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['./src/mocks/setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html']
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/mocks/',
+        '**/*.test.ts',
+        '**/*.spec.ts'
+      ]
     }
   }
 })

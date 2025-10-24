@@ -1,7 +1,50 @@
 // types/api.ts
-// API 回應型別定義
+// API 回應型別定義 - Enhanced for CRM API Integration
 
-import type { UserInfo, AuthToken } from './auth'
+import type { UserInfo } from './auth'
+
+/**
+ * API 成功回應介面
+ */
+export interface ApiSuccessResponse<T = any> {
+  status: 'success'
+  data: T
+}
+
+/**
+ * API 錯誤回應介面
+ */
+export interface ApiErrorResponse {
+  status: 'error'
+  message: string
+  errors?: Record<string, string[]>
+}
+
+/**
+ * 登入回應資料
+ */
+export interface LoginResponse {
+  status: 'success'
+  data: {
+    access_token: string
+    refresh_token: string
+    token_type: 'Bearer'
+    expires_in: number
+    user: UserInfo
+  }
+}
+
+/**
+ * Token 更新回應資料
+ */
+export interface RefreshResponse {
+  status: 'success'
+  data: {
+    access_token: string
+    token_type: 'Bearer'
+    expires_in: number
+  }
+}
 
 export enum ErrorType {
   NETWORK = 'network',

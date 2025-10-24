@@ -1,5 +1,5 @@
 import api from './api'
-import type { UserInfo } from '@/stores/auth'
+import type { UserInfo } from '@/types/auth'
 
 /**
  * 登入請求介面

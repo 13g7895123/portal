@@ -39,7 +39,7 @@ class AuthService {
    * 登入
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await api.post<LoginResponse>('/api/v1/auth/login', credentials)
+    const response = await api.post<LoginResponse>('/auth/login', credentials)
     return response.data
   }
 
@@ -47,14 +47,14 @@ class AuthService {
    * 登出
    */
   async logout(): Promise<void> {
-    await api.post('/api/v1/auth/logout')
+    await api.post('/auth/logout')
   }
 
   /**
    * 更新 access token
    */
   async refreshToken(): Promise<RefreshResponse> {
-    const response = await api.post<RefreshResponse>('/api/v1/auth/refresh')
+    const response = await api.post<RefreshResponse>('/auth/refresh')
     return response.data
   }
 
@@ -62,7 +62,7 @@ class AuthService {
    * 取得當前使用者資訊
    */
   async getCurrentUser(): Promise<{ user: UserInfo }> {
-    const response = await api.get<{ user: UserInfo }>('/api/v1/auth/me')
+    const response = await api.get<{ user: UserInfo }>('/auth/me')
     return response.data
   }
 }

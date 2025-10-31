@@ -2,6 +2,7 @@
 // 表單驗證 Composable - 整合 Yup schema 與即時驗證
 
 import { ref, reactive, computed } from 'vue'
+import type { Ref, ComputedRef } from 'vue'
 import type { ObjectSchema } from 'yup'
 import type { ValidationError } from 'yup'
 
@@ -11,8 +12,8 @@ interface FormErrors {
 
 interface UseFormReturn<T> {
   values: T
-  errors: FormErrors
-  isValid: boolean
+  errors: Ref<FormErrors>
+  isValid: ComputedRef<boolean>
   validateField: (fieldName: keyof T) => Promise<boolean>
   validateForm: () => Promise<boolean>
   resetForm: () => void
@@ -48,21 +49,16 @@ export function useForm<T extends Record<string, any>>(
 
   /**
    * 計算表單是否有效
-   * 所有已觸碰的欄位都沒有錯誤，且至少有一個欄位已觸碰
+   * 根據 schema 即時驗證表單內容
    */
   const isValid = computed(() => {
-    // 如果沒有任何欄位被觸碰，表單無效
-    if (touchedFields.value.size === 0) {
-      return false
-    }
-
-    // 檢查所有欄位是否都沒有錯誤
+    // 檢查是否有錯誤訊息
     const hasErrors = Object.values(errors.value).some((error) => error !== undefined)
     if (hasErrors) {
       return false
     }
 
-    // 檢查所有必填欄位是否都已填寫
+    // 使用 schema 驗證整個表單
     try {
       schema.validateSync(values)
       return true
@@ -163,8 +159,8 @@ export function useForm<T extends Record<string, any>>(
 
   return {
     values,
-    errors: errors.value,
-    isValid: isValid.value,
+    errors,
+    isValid,
     validateField,
     validateForm,
     resetForm

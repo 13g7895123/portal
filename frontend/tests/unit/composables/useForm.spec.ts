@@ -9,25 +9,6 @@ import { loginCredentialsSchema } from '@/utils/validators'
 
 describe('[US3] useForm', () => {
   const TestComponent = defineComponent({
-    template: `
-      <form @submit.prevent="onSubmit">
-        <input
-          v-model="values.username"
-          name="username"
-          @blur="validateField('username')"
-        />
-        <span v-if="errors.username">{{ errors.username }}</span>
-
-        <input
-          v-model="values.password"
-          name="password"
-          @blur="validateField('password')"
-        />
-        <span v-if="errors.password">{{ errors.password }}</span>
-
-        <button type="submit" :disabled="!isValid">Submit</button>
-      </form>
-    `,
     setup() {
       const { values, errors, isValid, validateField, validateForm } = useForm(
         loginCredentialsSchema,
@@ -49,7 +30,26 @@ describe('[US3] useForm', () => {
         validateField,
         onSubmit
       }
-    }
+    },
+    template: `
+      <form @submit.prevent="onSubmit">
+        <input
+          v-model="values.username"
+          name="username"
+          @blur="validateField('username')"
+        />
+        <span v-if="errors.username">{{ errors.username }}</span>
+
+        <input
+          v-model="values.password"
+          name="password"
+          @blur="validateField('password')"
+        />
+        <span v-if="errors.password">{{ errors.password }}</span>
+
+        <button type="submit" :disabled="!isValid">Submit</button>
+      </form>
+    `
   })
 
   it('應初始化表單值', () => {

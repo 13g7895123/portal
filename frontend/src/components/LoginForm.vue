@@ -22,7 +22,7 @@
       label="帳號"
       placeholder="請輸入帳號"
       :required="true"
-      :disabled="isLoading"
+      :disabled="isLoading.value"
       :error="errors.username"
       @blur="handleFieldBlur('username')"
     />
@@ -36,7 +36,7 @@
       label="密碼"
       placeholder="請輸入密碼"
       :required="true"
-      :disabled="isLoading"
+      :disabled="isLoading.value"
       :error="errors.password"
       @blur="handleFieldBlur('password')"
     />
@@ -60,7 +60,7 @@
       type="submit"
       variant="primary"
       size="large"
-      :loading="isLoading"
+      :loading="isLoading.value"
       :disabled="!isFormValid"
       :full-width="true"
       loading-text="登入中..."
@@ -96,7 +96,7 @@ const errorMessage = computed(() => error.value?.message || '')
 
 // 表單有效性：驗證通過且未在載入中
 const isFormValid = computed(() => {
-  return isValid && !isLoading.value
+  return isValid.value && !isLoading.value
 })
 
 /**

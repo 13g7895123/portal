@@ -21,6 +21,32 @@ const openEditDialog = (app) => {
     showEditDialog.value = true
 }
 
+const handleFileUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+        const response = await fetch('http://localhost:8001/api/upload', {
+            method: 'POST',
+            body: formData
+        })
+
+        if (response.ok) {
+            const data = await response.json()
+            if (editingApp.value) {
+                editingApp.value.icon_url = data.url
+            }
+        } else {
+            console.error("Upload failed")
+        }
+    } catch (e) {
+        console.error("Upload handler error", e)
+    }
+}
+
 const saveApp = async () => {
     try {
         const response = await fetch(`http://localhost:8001/api/apps/${editingApp.value.id}`, {
@@ -81,7 +107,10 @@ onMounted(fetchApps)
 
                 <div class="form-group">
                     <label>Icon URL</label>
-                    <input v-model="editingApp.icon_url" type="text">
+                    <div class="icon-input-group">
+                        <input v-model="editingApp.icon_url" type="text" placeholder="https://...">
+                        <input type="file" @change="handleFileUpload" accept="image/*" class="file-input">
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -178,12 +207,23 @@ h1 {
     gap: 0.5rem;
 }
 
-.form-group input {
+.form-group input[type="text"] {
     padding: 0.5rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.3);
     color: white;
+}
+
+.icon-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-input {
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
 .dialog-actions {

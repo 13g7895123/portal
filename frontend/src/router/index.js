@@ -14,6 +14,10 @@ const router = createRouter({
             path: '/admin',
             name: 'admin',
             component: AdminView
+        },
+        {
+            path: '/settings',
+            redirect: '/admin'
         }
     ]
 })

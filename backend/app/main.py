@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from .api.endpoints import apps
+from .api.endpoints import apps, upload
+import os
 
 app = FastAPI(title="Entry Portal API")
 
@@ -13,5 +15,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount Static Files
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+os.makedirs(STATIC_DIR, exist_ok=True) # Ensure static dir exists
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 # Include Routers
 app.include_router(apps.router, prefix="/api", tags=["apps"])
+app.include_router(upload.router, prefix="/api", tags=["upload"])
+

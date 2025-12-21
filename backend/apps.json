@@ -1,10 +1,10 @@
 [
     {
         "id": 1,
-        "title": "My Dashboard",
+        "title": "Blog",
         "icon_url": "https://example.com/icon.png",
-        "link_url": "/dashboard",
-        "description": "Main system dashboard"
+        "link_url": "https://blog.try-8verything.com/",
+        "description": ""
     },
     {
         "id": 2,
@@ -24,7 +24,7 @@
         "id": 4,
         "title": "Settings",
         "icon_url": "https://ui-avatars.com/api/?name=ST&background=607d8b&color=fff&size=128",
-        "link_url": "/settings",
+        "link_url": "/admin",
         "description": "System configuration"
     },
     {

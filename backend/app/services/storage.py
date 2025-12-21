@@ -34,7 +34,7 @@ def load_apps():
                 "id": 4,
                 "title": "Settings",
                 "icon_url": "https://ui-avatars.com/api/?name=ST&background=607d8b&color=fff&size=128",
-                "link_url": "/settings",
+                "link_url": "/admin",
                 "description": "System configuration"
             },
              {

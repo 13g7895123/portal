@@ -1,8 +1,4 @@
 <script setup>
-defineProps({
-    isEditMode: Boolean
-})
-defineEmits(['toggle-edit'])
 </script>
 
 <template>
@@ -13,13 +9,13 @@ defineEmits(['toggle-edit'])
         <span class="logo-text">Portal</span>
       </div>
       <div class="nav-links">
-        <button @click="$emit('toggle-edit')" class="nav-item btn-link" :class="{ 'active': isEditMode }">
-            {{ isEditMode ? 'Done' : 'Settings' }}
-        </button>
-        <a href="#" class="nav-item">Documentation</a>
+        <router-link to="/admin" class="nav-item btn-link" active-class="active">
+          Settings
+        </router-link>
+        <router-link to="/" class="nav-item">Documentation</router-link>
         <a href="#" class="nav-item">Support</a>
         <div class="user-profile">
-            <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" />
+          <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User" />
         </div>
       </div>
     </div>
@@ -28,18 +24,19 @@ defineEmits(['toggle-edit'])
 
 <style scoped>
 .btn-link {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
 }
 
 .btn-link.active {
-    background: rgba(56, 189, 248, 0.2);
-    color: #38bdf8;
+  background: rgba(56, 189, 248, 0.2);
+  color: #38bdf8;
 }
+
 .navbar {
   position: fixed;
   top: 0;

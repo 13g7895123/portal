@@ -2,7 +2,12 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from .api.endpoints import apps, upload, auth
+from .core.database import engine, Base
+from . import models
 import os
+
+# Create Database tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Entry Portal API")
 

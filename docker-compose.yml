@@ -1,9 +1,26 @@
 services:
+  db:
+    image: postgres:15-alpine
+    container_name: entry-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_EXTERNAL_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
   backend:
     build: ./backend
     container_name: entry-backend
+    depends_on:
+      - db
     ports:
       - "${BACKEND_PORT}:8001"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     volumes:
       - ./backend/apps.json:/app/apps.json
       - ./backend/users.json:/app/users.json
@@ -23,3 +40,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  db_data:

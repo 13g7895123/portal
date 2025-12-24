@@ -2,6 +2,9 @@ from fastapi import APIRouter, File, UploadFile, HTTPException
 import shutil
 import os
 import uuid
+from ...services.auth import get_current_user
+from fastapi import Depends
+
 
 router = APIRouter()
 
@@ -10,7 +13,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.pa
 UPLOAD_DIR = os.path.join(BASE_DIR, "static", "uploads")
 
 @router.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+
     try:
         # Create directory if it doesn't exist
         os.makedirs(UPLOAD_DIR, exist_ok=True)

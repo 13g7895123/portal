@@ -6,7 +6,7 @@ const apps = ref([])
 
 const fetchApps = async () => {
     try {
-        const response = await fetch('http://localhost:8001/api/apps')
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/apps`)
         if (response.ok) {
             apps.value = await response.json()
         }
@@ -30,10 +30,11 @@ onMounted(fetchApps)
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    gap: 2.5rem;
     width: 100%;
-    max-width: 1200px;
-    padding: 1rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .card-wrapper {

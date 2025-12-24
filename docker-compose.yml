@@ -6,6 +6,7 @@ services:
       - "${BACKEND_PORT}:8001"
     volumes:
       - ./backend/apps.json:/app/apps.json
+      - ./backend/users.json:/app/users.json
       - ./backend/static:/app/static
     restart: unless-stopped
 
@@ -16,6 +17,9 @@ services:
       - "${FRONTEND_PORT}:3000"
     environment:
       - VITE_API_URL=${VITE_API_URL}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     restart: unless-stopped

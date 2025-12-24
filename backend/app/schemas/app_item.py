@@ -13,3 +13,9 @@ class AppUpdate(BaseModel):
     icon_url: Optional[str] = None
     link_url: Optional[str] = None
     description: Optional[str] = None
+
+class AppCreate(BaseModel):
+    title: str
+    icon_url: str
+    link_url: str
+    description: str

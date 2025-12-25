@@ -537,6 +537,13 @@ onMounted(fetchApps)
                         </div>
 
                         <div class="field-item">
+                            <label>REDIRECT_DEST</label>
+                            <div class="cyber-input">
+                                <input v-model="editingApp.link_url" type="text">
+                            </div>
+                        </div>
+
+                        <div class="field-item">
                             <label>ASSET_PATH_SRC</label>
                             <div class="input-group">
                                 <div class="cyber-input">
@@ -546,13 +553,6 @@ onMounted(fetchApps)
                                     UPLOAD_NEW
                                     <input type="file" @change="handleFileUpload" accept="image/*" hidden>
                                 </label>
-                            </div>
-                        </div>
-
-                        <div class="field-item">
-                            <label>REDIRECT_DEST</label>
-                            <div class="cyber-input">
-                                <input v-model="editingApp.link_url" type="text">
                             </div>
                         </div>
 

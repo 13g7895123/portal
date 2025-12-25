@@ -34,15 +34,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 def get_user_by_username(db: Session, username: str):
-    user = db.query(User).filter(User.username == username).first()
-    if not user and username == 'admin':
-        # Auto-seed admin if missing (one-time behavior)
-        hashed = get_password_hash("admin888")
-        user = User(username="admin", hashed_password=hashed)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    return user
+    """查詢用戶，不會自動建立"""
+    return db.query(User).filter(User.username == username).first()
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(

@@ -39,7 +39,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "${FRONTEND_PORT}:80"
+      - "${NGINX_PORT}:80"
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../nginx/conf.d:/etc/nginx/conf.d:ro

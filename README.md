@@ -49,12 +49,12 @@ portal/
 ### 3. 存取服務
 
 開發環境預設埠號：
-- 前端: http://localhost:9102
-- 後端 API: http://localhost:9202
-- 資料庫: localhost:9302
+- 前端 (Nginx): http://localhost:9110
+- 後端 API: http://localhost:9210
+- 資料庫: localhost:9310
 
 正式環境預設埠號：
-- 前端: http://localhost:80
+- 前端 (Nginx): http://localhost:8080
 - 後端 API: http://localhost:8001
 - 資料庫: localhost:5432
 
@@ -136,12 +136,12 @@ docker compose up -d
 COMPOSE_PROJECT_NAME=portal
 
 # 服務埠號
-FRONTEND_PORT=9102
-BACKEND_PORT=9202
-DB_EXTERNAL_PORT=9302
+NGINX_PORT=9110
+BACKEND_PORT=9210
+DB_EXTERNAL_PORT=9310
 
 # 前端 API URL
-VITE_API_URL=http://localhost:9202
+VITE_API_URL=http://localhost:9210
 
 # 資料庫設定
 POSTGRES_USER=portal_admin

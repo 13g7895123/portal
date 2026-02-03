@@ -79,9 +79,9 @@ main() {
             source .env
             echo ""
             log_info "服務端點:"
-            echo "  Frontend: http://localhost:${FRONTEND_PORT:-9102}"
-            echo "  Backend:  http://localhost:${BACKEND_PORT:-9202}"
-            echo "  DB:       localhost:${DB_EXTERNAL_PORT:-9302}"
+            echo "  Frontend: http://localhost:${NGINX_PORT:-9110}"
+            echo "  Backend:  http://localhost:${BACKEND_PORT:-9210}"
+            echo "  DB:       localhost:${DB_EXTERNAL_PORT:-9310}"
         fi
         echo "========================================"
     else

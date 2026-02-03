@@ -24,7 +24,7 @@ if [ -f "$DOCKER_DIR/.env" ]; then
 fi
 
 BACKEND_PORT=${BACKEND_PORT:-9202}
-FRONTEND_PORT=${FRONTEND_PORT:-9102}
+NGINX_PORT=${NGINX_PORT:-9110}
 
 echo ""
 echo "========================================"
@@ -39,7 +39,7 @@ else
 fi
 
 # 檢查前端 (透過 nginx)
-if curl -sf "http://localhost:${FRONTEND_PORT}/health" > /dev/null 2>&1; then
+if curl -sf "http://localhost:${NGINX_PORT}/health" > /dev/null 2>&1; then
     echo -e "Frontend/Nginx: ${GREEN}● 健康${NC}"
 else
     echo -e "Frontend/Nginx: ${RED}● 異常${NC}"

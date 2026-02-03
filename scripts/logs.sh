@@ -7,18 +7,10 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+DOCKER_DIR="$PROJECT_DIR/docker"
 
-cd "$PROJECT_DIR"
+cd "$DOCKER_DIR"
 
-get_compose_cmd() {
-    if docker compose version &> /dev/null; then
-        echo "docker compose"
-    else
-        echo "docker-compose"
-    fi
-}
-
-COMPOSE_CMD=$(get_compose_cmd)
 
 SERVICE=""
 FOLLOW=""
@@ -35,7 +27,7 @@ for arg in "$@"; do
 done
 
 if [ -z "$SERVICE" ]; then
-    $COMPOSE_CMD logs --tail=100 $FOLLOW
+    docker compose logs --tail=100 $FOLLOW
 else
-    $COMPOSE_CMD logs --tail=100 $FOLLOW "$SERVICE"
+    docker compose logs --tail=100 $FOLLOW "$SERVICE"
 fi

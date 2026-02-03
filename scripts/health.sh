@@ -7,6 +7,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+DOCKER_DIR="$PROJECT_DIR/docker"
 
 cd "$PROJECT_DIR"
 
@@ -18,8 +19,8 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 # 載入環境變數
-if [ -f .env ]; then
-    source .env
+if [ -f "$DOCKER_DIR/.env" ]; then
+    source "$DOCKER_DIR/.env"
 fi
 
 BACKEND_PORT=${BACKEND_PORT:-9202}
@@ -45,7 +46,7 @@ else
 fi
 
 # 檢查資料庫
-if docker exec portal-db pg_isready -U ${POSTGRES_USER:-portal_admin} > /dev/null 2>&1; then
+if docker exec portal-db-1 pg_isready -U ${POSTGRES_USER:-portal_admin} > /dev/null 2>&1; then
     echo -e "Database:       ${GREEN}● 健康${NC}"
 else
     echo -e "Database:       ${RED}● 異常${NC}"

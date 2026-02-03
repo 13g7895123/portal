@@ -7,8 +7,9 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+DOCKER_DIR="$PROJECT_DIR/docker"
 
-cd "$PROJECT_DIR"
+cd "$DOCKER_DIR"
 
 # 顏色定義
 RED='\033[0;31m'
@@ -50,18 +51,6 @@ check_docker() {
     fi
 }
 
-# 選擇 docker compose 命令
-get_compose_cmd() {
-    if docker compose version &> /dev/null; then
-        echo "docker compose"
-    elif command -v docker-compose &> /dev/null; then
-        echo "docker-compose"
-    else
-        log_error "找不到 docker compose 或 docker-compose"
-        exit 1
-    fi
-}
-
 # 主程式
 main() {
     local BUILD_FLAG=""
@@ -73,14 +62,12 @@ main() {
 
     check_docker
     
-    COMPOSE_CMD=$(get_compose_cmd)
-    
     echo ""
     echo "========================================"
     log_info "正在啟動專案容器..."
     echo "========================================"
     
-    $COMPOSE_CMD up -d $BUILD_FLAG
+    docker compose up -d $BUILD_FLAG
     
     if [ $? -eq 0 ]; then
         echo ""

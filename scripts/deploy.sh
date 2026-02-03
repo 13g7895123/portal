@@ -9,8 +9,9 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+DOCKER_DIR="$PROJECT_DIR/docker"
 
-cd "$PROJECT_DIR"
+cd "$DOCKER_DIR"
 
 # 顏色定義
 RED='\033[0;31m'
@@ -26,44 +27,35 @@ log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 NGINX_CONF="$PROJECT_DIR/nginx/conf.d/default.conf"
-NGINX_CONTAINER="portal-nginx"
+NGINX_CONTAINER="portal-nginx-1"
 
 # 取得當前活躍的環境
 get_active_env() {
-    if grep -q "server portal-frontend-blue:80;" "$NGINX_CONF" && ! grep -q "# server portal-frontend-blue:80;" "$NGINX_CONF"; then
+    if grep -q "server portal-frontend-blue-1:80;" "$NGINX_CONF" && ! grep -q "# server portal-frontend-blue-1:80;" "$NGINX_CONF"; then
         echo "blue"
     else
         echo "green"
     fi
 }
 
-# 取得 compose 命令
-get_compose_cmd() {
-    if docker compose version &> /dev/null; then
-        echo "docker compose"
-    else
-        echo "docker-compose"
-    fi
-}
-
 # 健康檢查
 health_check() {
-    local container=$1
+    local service=$1
     local max_retries=30
     local retry=0
     
-    log_info "等待 $container 健康檢查..."
+    log_info "等待 $service 健康檢查..."
     
     while [ $retry -lt $max_retries ]; do
-        if docker exec "$container" curl -sf http://localhost:80 > /dev/null 2>&1; then
-            log_success "$container 健康檢查通過"
+        if docker compose exec -T "$service" curl -sf http://localhost:80 > /dev/null 2>&1; then
+            log_success "$service 健康檢查通過"
             return 0
         fi
         retry=$((retry + 1))
         sleep 2
     done
     
-    log_error "$container 健康檢查失敗"
+    log_error "$service 健康檢查失敗"
     return 1
 }
 
@@ -76,11 +68,11 @@ switch_to() {
     
     # 更新 nginx 設定
     if [ "$target" == "blue" ]; then
-        sed -i 's/# server portal-frontend-blue:80;/server portal-frontend-blue:80;/' "$NGINX_CONF"
-        sed -i 's/server portal-frontend-green:80;/# server portal-frontend-green:80;/' "$NGINX_CONF"
+        sed -i 's/# server portal-frontend-blue-1:80;/server portal-frontend-blue-1:80;/' "$NGINX_CONF"
+        sed -i 's/server portal-frontend-green-1:80;/# server portal-frontend-green-1:80;/' "$NGINX_CONF"
     else
-        sed -i 's/server portal-frontend-blue:80;/# server portal-frontend-blue:80;/' "$NGINX_CONF"
-        sed -i 's/# server portal-frontend-green:80;/server portal-frontend-green:80;/' "$NGINX_CONF"
+        sed -i 's/server portal-frontend-blue-1:80;/# server portal-frontend-blue-1:80;/' "$NGINX_CONF"
+        sed -i 's/# server portal-frontend-green-1:80;/server portal-frontend-green-1:80;/' "$NGINX_CONF"
     fi
     
     # 重載 nginx
@@ -92,16 +84,15 @@ switch_to() {
 # 部署新版本
 deploy() {
     local target=$1
-    COMPOSE_CMD=$(get_compose_cmd)
     
     log_info "正在部署新版本到 ${target} 環境..."
     
     # 建置並啟動目標容器
-    $COMPOSE_CMD build "frontend-${target}"
-    $COMPOSE_CMD up -d "frontend-${target}"
+    docker compose build "frontend-${target}"
+    docker compose up -d "frontend-${target}"
     
     # 健康檢查
-    if ! health_check "portal-frontend-${target}"; then
+    if ! health_check "frontend-${target}"; then
         log_error "新版本部署失敗，保持原環境"
         return 1
     fi

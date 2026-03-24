@@ -30,12 +30,15 @@ ENV/
 env/
 .venv/
 
-# ============ Node.js ============
+# ============ Node.js / Bun ============
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+bun-debug.log*
+# npm lockfile (project uses bun)
+package-lock.json
 
 # ============ Build outputs ============
 dist/
@@ -67,6 +70,14 @@ Thumbs.db
 .env.local
 .env.*.local
 !.env.example
+# docker/envs - 只保留 example，其他含機密資訊
+docker/envs/.env.development
+docker/envs/.env.production
+docker/envs/.env.staging
+
+# ============ 機密資料 ============
+# 用戶資料（含雜湊密碼）
+backend/users.json
 
 # ============ Logs ============
 logs/
@@ -78,6 +89,10 @@ logs/
 
 # ============ Database ============
 *.sqlite
+
+# ============ 靜態上傳 ============
+backend/static/uploads/*
+!backend/static/uploads/.gitkeep
 *.db
 
 # ============ Coverage ============

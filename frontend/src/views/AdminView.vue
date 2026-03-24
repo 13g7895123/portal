@@ -87,6 +87,17 @@ const executeDelete = async () => {
     }
 }
 
+const fetchFavicon = () => {
+    if (!editingApp.value?.link_url) return
+    try {
+        const url = new URL(editingApp.value.link_url)
+        editingApp.value.icon_url = `https://www.google.com/s2/favicons?sz=64&domain_url=${url.origin}`
+        window.sysNotify('FAVICON_FETCHED: Icon URL updated from target domain.', 'success')
+    } catch (e) {
+        window.sysNotify('PARSE_ERROR: Invalid URL format, cannot fetch favicon.', 'error')
+    }
+}
+
 const handleFileUpload = async (event) => {
     const file = event.target.files[0]
     if (!file) return
@@ -545,14 +556,21 @@ onMounted(fetchApps)
 
                         <div class="field-item">
                             <label>ASSET_PATH_SRC</label>
-                            <div class="input-group">
-                                <div class="cyber-input">
-                                    <input v-model="editingApp.icon_url" type="text">
+                            <div class="icon-field-wrapper">
+                                <div class="input-group">
+                                    <div class="cyber-input">
+                                        <input v-model="editingApp.icon_url" type="text">
+                                    </div>
+                                    <button class="btn-upload btn-favicon" type="button" @click="fetchFavicon">FETCH_FAVICON</button>
+                                    <label class="btn-upload">
+                                        UPLOAD_NEW
+                                        <input type="file" @change="handleFileUpload" accept="image/*" hidden>
+                                    </label>
                                 </div>
-                                <label class="btn-upload">
-                                    UPLOAD_NEW
-                                    <input type="file" @change="handleFileUpload" accept="image/*" hidden>
-                                </label>
+                                <div v-if="editingApp.icon_url" class="icon-preview-box">
+                                    <img :src="editingApp.icon_url" class="icon-preview-img" alt="icon preview" />
+                                    <span class="icon-preview-label">PREVIEW</span>
+                                </div>
                             </div>
                         </div>
 
@@ -1185,6 +1203,54 @@ onMounted(fetchApps)
 .btn-upload:hover {
     background: rgba(56, 189, 248, 0.1);
     border-color: #38bdf8;
+}
+
+.btn-favicon {
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #4ade80;
+    font-family: 'JetBrains Mono', monospace, sans-serif;
+    font-weight: 900;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.btn-favicon:hover {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: #4ade80;
+}
+
+.icon-field-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-field-wrapper .input-group {
+    flex: 1;
+}
+
+.icon-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    padding: 8px;
+    border-radius: 4px;
+    min-width: 64px;
+}
+
+.icon-preview-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.icon-preview-label {
+    font-size: 0.55rem;
+    color: #64748b;
+    letter-spacing: 1px;
 }
 
 .dialog-footer {

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   title: String,
   icon: String,
   url: String,
@@ -10,6 +10,11 @@ defineProps({
 
 const cardRef = ref(null)
 const tiltStyle = ref({})
+const iconSrc = ref(props.icon)
+
+const onIconError = () => {
+  iconSrc.value = `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(props.title || 'default')}`
+}
 
 const handleMouseMove = (e) => {
     if (!cardRef.value) return
@@ -55,7 +60,7 @@ const handleMouseLeave = () => {
       <div class="card-header">
         <div class="pulse-ring"></div>
         <div class="icon-box">
-          <img :src="icon" :alt="title" />
+          <img :src="iconSrc" :alt="title" @error="onIconError" />
         </div>
       </div>
 

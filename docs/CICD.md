@@ -292,7 +292,7 @@ curl http://localhost:80
 | `VPS_USER` | SSH 登入使用者 | `deploy` |
 | `VPS_SSH_KEY` | SSH 私鑰完整內容（含首尾行） | `-----BEGIN OPENSSH PRIVATE KEY-----`... |
 | `PROJECT_PATH` | VPS 上的專案絕對路徑 | `/home/deploy/projects/portal` |
-| `PROD_API_URL` | 正式環境後端 API URL（給前端使用） | `https://api.yourdomain.com` |
+| `PROD_API_URL` | 後端根網址（**不含 `/api`**，前端會自動補上） | `https://yourdomain.com` |
 
 > **VPS_SSH_KEY** 貼入時需包含完整內容：
 > ```

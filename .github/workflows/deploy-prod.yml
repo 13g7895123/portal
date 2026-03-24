@@ -84,6 +84,9 @@ jobs:
             # 拉取最新程式碼
             git pull origin master
             
+            # 同步 pgAdmin servers.json（依 .env 中 POSTGRES_USER / POSTGRES_DB）
+            ./scripts/sync_pgadmin.sh
+            
             # 登入 Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             

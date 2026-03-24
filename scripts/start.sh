@@ -23,6 +23,9 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
+# 同步 pgAdmin servers.json（依 .env 自動更新 DB 連線設定）
+"$SCRIPT_DIR/sync_pgadmin.sh"
+
 # 檢查 Docker 服務狀態
 check_docker() {
     log_info "檢查 Docker 服務狀態..."
@@ -82,6 +85,7 @@ main() {
             echo "  Frontend: http://localhost:${NGINX_PORT:-9110}"
             echo "  Backend:  http://localhost:${BACKEND_PORT:-9210}"
             echo "  DB:       localhost:${DB_EXTERNAL_PORT:-9310}"
+            echo "  pgAdmin:  http://localhost:${NGINX_PORT:-9110}/pgadmin/"
         fi
         echo "========================================"
     else

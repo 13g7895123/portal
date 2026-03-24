@@ -75,6 +75,9 @@ else
     log_info "使用現有的 .env 檔案"
 fi
 
+# 同步 pgAdmin servers.json（依 .env 中的 DB 設定自動更新）
+"$SCRIPT_DIR/scripts/sync_pgadmin.sh" "$ENV_FILE"
+
 # 切換到 docker 目錄
 cd "$DOCKER_DIR"
 

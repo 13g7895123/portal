@@ -46,7 +46,31 @@ services:
     depends_on:
       - frontend-blue
       - frontend-green
+      - pgadmin
     restart: unless-stopped
+
+  # pgAdmin - 資料庫管理介面
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      SCRIPT_NAME: /pgadmin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/pgadmin/misc/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # 前端藍色環境
   frontend-blue:
@@ -81,3 +105,4 @@ services:
 volumes:
   db_data:
   backend_static:
+  pgadmin_data:

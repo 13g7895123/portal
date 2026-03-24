@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Portal DB",
+      "Group": "Portal",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "portal_db",
+      "Username": "portal_admin",
+      "SSLMode": "prefer",
+      "Comment": "若 POSTGRES_USER / POSTGRES_DB 有變更，請同步更新此檔"
+    }
+  }
+}

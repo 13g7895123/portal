@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   title: String,
@@ -12,9 +12,17 @@ const cardRef = ref(null)
 const tiltStyle = ref({})
 const iconSrc = ref(props.icon)
 
+watch(() => props.icon, (newVal) => {
+  iconSrc.value = newVal
+})
+
 const onIconError = () => {
   iconSrc.value = `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(props.title || 'default')}`
 }
+
+const isExternal = computed(() =>
+  props.url?.startsWith('http://') || props.url?.startsWith('https://')
+)
 
 const handleMouseMove = (e) => {
     if (!cardRef.value) return
@@ -44,6 +52,8 @@ const handleMouseLeave = () => {
     :href="url" 
     class="app-card" 
     ref="cardRef"
+    :target="isExternal ? '_blank' : '_self'"
+    :rel="isExternal ? 'noopener noreferrer' : undefined"
     @mousemove="handleMouseMove"
     @mouseleave="handleMouseLeave"
     :style="tiltStyle"
